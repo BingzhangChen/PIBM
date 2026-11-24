@@ -1,6 +1,12 @@
 MODULE PARAMS
 implicit NONE
 
+! Station name
+character(4)  :: Stn = ['BATS'] 
+
+! Station latitude
+real :: Stn_lat = 31.67d0 ! BATS by default; should be changed in param.nml
+
 ! Parameters
 real :: mu0     =  0d0  !Maximal growth rate normalized to 15 C (d-1)
 real :: aI0     =  0d0  !Chl-specific Slope of P-I curve ((W m-2)-1 (gChl molC)-1 d-1)

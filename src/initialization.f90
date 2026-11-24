@@ -21,7 +21,7 @@ integer, parameter :: namlst         = 20   !Unit time for namelist files
 integer            :: AllocateStatus = 0
 logical            :: exists         = .true.
 
-character(LEN=20) :: NO3_file='BATS_NO3_Jan.dat'
+character(LEN=20) :: NO3_file=trim(Stn)//'_NO3_Jan.dat' 
 
 !==========================================================
 
@@ -29,7 +29,7 @@ character(LEN=20) :: NO3_file='BATS_NO3_Jan.dat'
 namelist /timelist/  NDay_Run, dtsec, nsave, Nrand, read_previous_output
 
 !Namelist definition of model choice and parameters
-namelist /paramlist/ Model_ID, N_pass, N_Par, mu0, aI0, KN, gmax, Kp, mz,GGE, unass, RDN, &
+namelist /paramlist/ Stn, Model_ID, N_pass, N_Par, mu0, aI0, KN, gmax, Kp, mz,GGE, unass, RDN, &
                      wDET, SDZoo
 
 ! Check whether the namelist file exists.

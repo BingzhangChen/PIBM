@@ -3,14 +3,14 @@ Module forcing
 !It also calculates surface PAR
 use Time_setting, only: d_per_s, y_per_d, s_per_h
 use Grid,         only: nlev, Z_r, Hz, Z_w
-use params,       only: pi, VAR_noise_Kv
+use params,       only: pi, VAR_noise_Kv, Stn_lat
 implicit none
 
 private
 
 !Temperature forcing
-character(len=20), parameter :: temp_time_file = 'BATS_temp_time.dat'
-character(len=20), parameter :: temp_file      = 'BATS_temp.dat'
+character(len=20) :: temp_time_file = trim(Stn)//'_temp_time.dat'
+character(len=20) :: temp_file      = trim(Stn)//'BATS_temp.dat'
 
 !Number of time points of observed WOA temperature
 integer,           parameter :: N_time_temp    = 12
@@ -31,8 +31,8 @@ real                         :: VTemp(nlev, N_time_temp)          = 0.d0
 real                         ::  Temp(nlev)                       = 0.d0
 
 !Kv forcing
-character(len=20), parameter :: Kv_time_file = 'BATS_Kv_time.dat'
-character(len=20), parameter :: Kv_file      = 'BATS_Kv.dat'
+character(len=20), parameter :: Kv_time_file = trim(Stn)//'_Kv_time.dat'
+character(len=20), parameter :: Kv_file      = trim(Stn)//'_Kv.dat'
 
 !Number of time points of observed Kv
 integer,           parameter :: N_time_Kv    = 360
@@ -40,7 +40,7 @@ integer,           parameter :: N_time_Kv    = 360
 !Observed time of Kv (unit: second)
 real                         :: obs_time_Kv(N_time_Kv)            = 0.d0
 
-!Water column Kv directly estimated from ROMS model output
+!Water column Kv directly obtained from external output
 integer,       parameter     :: N_obs_Kv                          = 22
 real                         :: obs_Kv(N_obs_Kv, 1+N_time_Kv)     = 0.d0
 
@@ -73,8 +73,6 @@ public :: w, Kv, VKv, N_time_Kv, obs_time_Kv, obs_Kv, Kbg   !Scalars and vectors
 public :: Dirichlet, Neumann, bot_bound
 public :: extract_Kv
 
-! Station latitude (Convert latitude to radians)
-real, parameter :: Stn_lat = 31.67d0 *pi/180.d0  !BATS
 
 CONTAINS
 
@@ -166,13 +164,16 @@ endif
 return
 END FUNCTION surface_par
 
-real function diurnal_light(jday,latradians, time_of_day) result(y)
+real function diurnal_light(jday,lat_deg, time_of_day) result(y)
 IMPLICIT NONE
 integer, intent(in) :: jday         !Julian date
-real,    INTENT(in) :: latradians   !Latitude in radians
+real,    INTENT(in) :: lat_deg      !Latitude in degree
 integer, INTENT(in) :: time_of_day  !Unit: second
 real                :: Day_len = 0.d0
 real                :: I_noon_ = 0.d0
+
+!Convert latitude from degree to radians
+latradians = lat_deg * pi/180.d0  
 
 if (time_of_day .eq. 0) then
    !Daylength
@@ -216,7 +217,7 @@ real :: cff = 0d0
 
 !Obtain time
 call Readcsv(Kv_time_file, 1, N_time_Kv, obs_time_Kv) 
-obs_time_Kv(:) = obs_time_Kv(:) * dble(d_per_s) !unit: second (NOTE the difference with temperature time)
+obs_time_Kv(:) = obs_time_Kv(:) * dble(d_per_s) !unit: second (NOTE the original unit is in days, different with temperature time)
 
 !Obtain Kv
 call Readcsv(Kv_file, N_obs_Kv, N_time_Kv+1, obs_Kv) 
@@ -251,7 +252,7 @@ implicit none
 
 !Obtain time
 call Readcsv(temp_time_file, 1, N_time_temp, obs_time_temp) 
-obs_time_temp(:) = obs_time_temp(:)*3.d1*dble(d_per_s) !unit: second
+obs_time_temp(:) = obs_time_temp(:)*3.d1*dble(d_per_s) !unit: second; convert from the original unit (month) to second
 
 !Obtain WOA temperature data
 call Readcsv(temp_file, size(obs_Temp,1), size(obs_Temp,2), obs_Temp) 
