@@ -2,7 +2,7 @@ MODULE PARAMS
 implicit NONE
 
 ! Station name
-character(4)  :: Stn = ['BATS'] 
+character(4)  :: Stn = 'BATS' 
 
 ! Station latitude
 real :: Stn_lat = 31.67d0 ! BATS by default; should be changed in param.nml
@@ -52,5 +52,8 @@ real, parameter   :: pi= 3.1415926535
 integer, parameter :: NTrait = 3
 real :: nu(NTrait) = [1d-12, 1d-12, 1d-12] !Probability per generation per cell
 real :: sigma(NTrait) = [0.1, 0.1, 0.1]    !Standard deviation of mutation of the three traits
+
+!The variance of random noise added to VKv
+real, parameter :: VAR_noise_Kv = 0d0
 
 end module params

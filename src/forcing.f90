@@ -3,14 +3,14 @@ Module forcing
 !It also calculates surface PAR
 use Time_setting, only: d_per_s, y_per_d, s_per_h
 use Grid,         only: nlev, Z_r, Hz, Z_w
-use params,       only: pi, VAR_noise_Kv, Stn_lat
+use params,       only: pi, VAR_noise_Kv, Stn_lat, Stn
 implicit none
 
 private
 
 !Temperature forcing
-character(len=20) :: temp_time_file = trim(Stn)//'_temp_time.dat'
-character(len=20) :: temp_file      = trim(Stn)//'BATS_temp.dat'
+character(len=100), public :: temp_time_file 
+character(len=100), public :: temp_file      
 
 !Number of time points of observed WOA temperature
 integer,           parameter :: N_time_temp    = 12
@@ -31,8 +31,8 @@ real                         :: VTemp(nlev, N_time_temp)          = 0.d0
 real                         ::  Temp(nlev)                       = 0.d0
 
 !Kv forcing
-character(len=20), parameter :: Kv_time_file = trim(Stn)//'_Kv_time.dat'
-character(len=20), parameter :: Kv_file      = trim(Stn)//'_Kv.dat'
+character(len=100), public :: Kv_time_file 
+character(len=100), public :: Kv_file      
 
 !Number of time points of observed Kv
 integer,           parameter :: N_time_Kv    = 360
@@ -171,6 +171,7 @@ real,    INTENT(in) :: lat_deg      !Latitude in degree
 integer, INTENT(in) :: time_of_day  !Unit: second
 real                :: Day_len = 0.d0
 real                :: I_noon_ = 0.d0
+real                :: latradians = 0d0
 
 !Convert latitude from degree to radians
 latradians = lat_deg * pi/180.d0  

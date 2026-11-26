@@ -21,7 +21,7 @@ integer, parameter :: namlst         = 20   !Unit time for namelist files
 integer            :: AllocateStatus = 0
 logical            :: exists         = .true.
 
-character(LEN=20) :: NO3_file=trim(Stn)//'_NO3_Jan.dat' 
+character(LEN=20) :: NO3_file
 
 !==========================================================
 
@@ -29,7 +29,7 @@ character(LEN=20) :: NO3_file=trim(Stn)//'_NO3_Jan.dat'
 namelist /timelist/  NDay_Run, dtsec, nsave, Nrand, read_previous_output
 
 !Namelist definition of model choice and parameters
-namelist /paramlist/ Stn, Model_ID, N_pass, N_Par, mu0, aI0, KN, gmax, Kp, mz,GGE, unass, RDN, &
+namelist /paramlist/ Stn, Stn_lat, Model_ID, N_pass, N_Par, mu0, aI0, KN, gmax, Kp, mz,GGE, unass, RDN, &
                      wDET, SDZoo
 
 ! Check whether the namelist file exists.
@@ -69,6 +69,12 @@ end if
 open(namlst,file='param.nml',status='old',action='read')
 read(namlst,nml=paramlist)
 close(namlst)
+
+temp_time_file = trim(Stn)//'_temp_time.dat'
+temp_file      = trim(Stn)//'_temp.dat'
+Kv_time_file   = trim(Stn)//'_Kv_time.dat'
+Kv_file        = trim(Stn)//'_Kv.dat'
+NO3_file       = trim(Stn)//'_NO3_Jan.dat' 
 
 IF (taskid .EQ. 0) WRITE(6,'(A15,1x,I1)') 'Select Model ID', Model_ID
 
